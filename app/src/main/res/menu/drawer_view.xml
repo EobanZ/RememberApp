@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_series"
+            android:icon="@drawable/common_full_open_on_phone"
+            android:title="Series" />
+        <item
+            android:id="@+id/nav_movies"
+
+            android:title="Movies" />
+        <item
+            android:id="@+id/nav_books"
+
+            android:title="Books" />
+        <item
+            android:id="@+id/nav_audiobooks"
+
+            android:title="Audio Books" />
+    </group>
+
+</menu>
