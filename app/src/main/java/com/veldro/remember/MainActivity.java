@@ -2,6 +2,7 @@ package com.veldro.remember;
 
 
 import android.app.Activity;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.ActionBar;
+import android.support.v4.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser user;
     String userEmail;
     String userId;
+
+    Fragment seriesFragment;
+    Fragment moviesFragment;
+    Fragment booksFragment;
+    Fragment audiobooksFragment;
+    FragmentTransaction transaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +56,22 @@ public class MainActivity extends AppCompatActivity {
                 item.setChecked(true);
                 mDrawerLayout.closeDrawers();
 
-
-                //TODO: Swap Fragments here
+                switch (item.getItemId()){
+                    case R.id.nav_series:
+                        if(seriesFragment == null)
+                            seriesFragment = new SeriesFragment();
+                        transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.content_frame, seriesFragment,"SeriesFragment");
+                        transaction.commit();
+                        break;
+                    case R.id.nav_movies:
+                        if(moviesFragment == null)
+                            moviesFragment = new MoviesFragment();
+                        transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.content_frame, moviesFragment, "MoviesFragment");
+                        transaction.commit();
+                }
+                
                 return true;
             }
         });
@@ -75,6 +97,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        seriesFragment = new SeriesFragment();
+        transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, seriesFragment,"SeriesFragment");
+        transaction.commit();
+
     }
 
     @Override
@@ -115,4 +143,8 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.menu, menu);
         return true;
     }
+
+
 }
+
+
