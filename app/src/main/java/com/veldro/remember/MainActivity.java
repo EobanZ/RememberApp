@@ -61,17 +61,17 @@ public class MainActivity extends AppCompatActivity {
                         if(seriesFragment == null)
                             seriesFragment = new SeriesFragment();
                         transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.content_frame, seriesFragment,"SeriesFragment");
+                        transaction.replace(R.id.fragment_container, seriesFragment,"SeriesFragment");
                         transaction.commit();
                         break;
                     case R.id.nav_movies:
                         if(moviesFragment == null)
                             moviesFragment = new MoviesFragment();
                         transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.content_frame, moviesFragment, "MoviesFragment");
+                        transaction.replace(R.id.fragment_container, moviesFragment, "MoviesFragment");
                         transaction.commit();
                 }
-                
+
                 return true;
             }
         });
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         seriesFragment = new SeriesFragment();
         transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, seriesFragment,"SeriesFragment");
+        transaction.replace(R.id.fragment_container, seriesFragment,"SeriesFragment");
         transaction.commit();
 
     }
