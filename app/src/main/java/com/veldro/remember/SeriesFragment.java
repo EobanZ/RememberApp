@@ -1,12 +1,21 @@
 package com.veldro.remember;
 
 import android.content.Context;
+import android.content.Intent;
+import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 
 /**
@@ -16,6 +25,10 @@ import android.view.ViewGroup;
  * to handle interaction events.
  */
 public class SeriesFragment extends Fragment {
+
+    ListView listView;
+    ArrayList<String> listItems = new ArrayList<>();
+    ArrayAdapter<String> arrayAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -28,6 +41,25 @@ public class SeriesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_series, container, false);
+
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        listView = view.findViewById(R.id.seriesListView);
+        listItems.clear();
+        for (int i = 0; i< 20; i++)
+        {
+            listItems.add(String.valueOf(i));
+        }
+
+        arrayAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1, listItems);
+        listView.setAdapter(arrayAdapter);
+        arrayAdapter.notifyDataSetChanged();
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
