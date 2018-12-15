@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.ActionBar;
@@ -24,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
     DrawerLayout mDrawerLayout;
+    NavigationView mNavigationView;
 
     FirebaseAuth mAuth;
     FirebaseUser user;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     Fragment booksFragment;
     Fragment audiobooksFragment;
     FragmentTransaction transaction;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24px);
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mNavigationView = findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 item.setChecked(true);
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 return true;
+
             }
         });
 
@@ -117,11 +121,13 @@ public class MainActivity extends AppCompatActivity {
         {
             userEmail = user.getEmail();
             userId = user.getUid();
-
+            TextView tv = mNavigationView.getHeaderView(0).findViewById(R.id.accountEmailTextView);
+            tv.setText(userEmail);
             Toast.makeText(getApplicationContext(), "User id & Mail: " + userId.toString() + " " + userEmail.toString(),Toast.LENGTH_LONG).show();
         }
         else{
             Intent startIntent = new Intent(getApplicationContext(), StartActivity.class);
+            startIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(startIntent);
         }
     }
