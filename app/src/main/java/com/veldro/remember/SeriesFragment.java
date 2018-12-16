@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -26,11 +27,12 @@ import java.util.ArrayList;
  */
 public class SeriesFragment extends Fragment {
 
-    ListView listView;
-    ArrayList<String> listItems = new ArrayList<>();
-    ArrayAdapter<String> arrayAdapter;
 
     private OnFragmentInteractionListener mListener;
+
+    ExpandableListView m_seriesListView;
+    ArrayList<SeriesEntry> testSeriesEntrys = new ArrayList<>();
+    ExpandableListAdapterSeries seriesAdapter;
 
     public SeriesFragment() {
         // Required empty public constructor
@@ -48,17 +50,17 @@ public class SeriesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        listView = view.findViewById(R.id.seriesListView);
-        listItems.clear();
-        for (int i = 0; i< 20; i++)
-        {
-            listItems.add(String.valueOf(i));
-        }
 
-        arrayAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1, listItems);
-        listView.setAdapter(arrayAdapter);
-        arrayAdapter.notifyDataSetChanged();
-
+        m_seriesListView = view.findViewById(R.id.seriesExpListView);
+        testSeriesEntrys.clear();
+        SeriesEntry entry1 = new SeriesEntry("Series 1", 0, 0);
+        SeriesEntry entry2 = new SeriesEntry("Series 2", 1, 12);
+        SeriesEntry entry3 = new SeriesEntry("Family Guy", 15, 3);
+        testSeriesEntrys.add(entry1);
+        testSeriesEntrys.add(entry2);
+        testSeriesEntrys.add(entry3);
+        seriesAdapter = new ExpandableListAdapterSeries(getContext(), testSeriesEntrys);
+        m_seriesListView.setAdapter(seriesAdapter);
 
     }
 

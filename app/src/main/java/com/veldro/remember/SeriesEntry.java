@@ -44,4 +44,22 @@ public class SeriesEntry {
     public int getMinutes(){
         return m_minutes;
     }
+
+    public void incSeason(){
+        m_season++;
+    }
+
+    public void incEpisode(){
+        m_episode++;
+    }
+
+    public void decSeason(){
+        m_season--;
+        m_season = m_season < 0? 0 : m_season;
+    }
+
+    public void decEpisode(){
+        m_episode--;
+        m_episode = m_episode < 0? 0 : m_episode;
+    }
 }

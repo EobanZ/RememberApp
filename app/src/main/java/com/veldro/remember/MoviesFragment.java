@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 
 
 /**
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 public class MoviesFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+
 
     public MoviesFragment() {
         // Required empty public constructor
