@@ -102,21 +102,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        seriesFragment = new SeriesFragment();
-        transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, seriesFragment,"SeriesFragment");
-        transaction.commit();
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
+        //Get Firebase Refs
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
-        //get UserInfos
+        //get UserInfos and set the Header
         if(user != null)
         {
             userEmail = user.getEmail();
@@ -130,6 +120,19 @@ public class MainActivity extends AppCompatActivity {
             startIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(startIntent);
         }
+
+        seriesFragment = new SeriesFragment();
+        transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, seriesFragment,"SeriesFragment");
+        transaction.commit();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
     }
 
     @Override

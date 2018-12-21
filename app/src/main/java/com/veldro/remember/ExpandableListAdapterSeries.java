@@ -16,12 +16,20 @@ public class ExpandableListAdapterSeries extends BaseExpandableListAdapter {
 
     private Context m_context;
     ArrayList<SeriesEntry> m_entries;
+    private SeriesFragment m_fragment;
 
 
     public ExpandableListAdapterSeries(Context context, ArrayList<SeriesEntry> entries)
     {
         m_context = context;
         m_entries = entries;
+    }
+
+    public ExpandableListAdapterSeries(Context context, ArrayList<SeriesEntry> entries, SeriesFragment fragment)
+    {
+        m_context = context;
+        m_entries = entries;
+        m_fragment = fragment;
     }
 
     @Override
@@ -72,9 +80,9 @@ public class ExpandableListAdapterSeries extends BaseExpandableListAdapter {
         grouItemHolder.seasonTextView = view.findViewById(R.id.groupItemSeasonSeriesTextView);
         grouItemHolder.episodeTextView = view. findViewById(R.id.groupItemEpisodeSeriesTextView);
 
-        grouItemHolder.nameTextView.setText(entry.getName());
-        grouItemHolder.seasonTextView.setText("S: " +String.valueOf(entry.getSeason()));
-        grouItemHolder.episodeTextView.setText("E: " +String.valueOf(entry.getEpisode()));
+        grouItemHolder.nameTextView.setText(entry.name);
+        grouItemHolder.seasonTextView.setText("S: " +String.valueOf(entry.season));
+        grouItemHolder.episodeTextView.setText("E: " +String.valueOf(entry.episode));
 
 
 
@@ -98,38 +106,37 @@ public class ExpandableListAdapterSeries extends BaseExpandableListAdapter {
         listItemViewHolder.episodeCountTextView = view.findViewById(R.id.countEpisodeTextView);
         listItemViewHolder.seasonCountTextView = view.findViewById(R.id.countSeriesTextView);
 
-        listItemViewHolder.episodeCountTextView.setText(String.valueOf(entry.getEpisode()));
-        listItemViewHolder.seasonCountTextView.setText(String.valueOf(entry.getSeason()));
+        listItemViewHolder.episodeCountTextView.setText(String.valueOf(entry.episode));
+        listItemViewHolder.seasonCountTextView.setText(String.valueOf(entry.season));
 
         listItemViewHolder.incSeasonButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                entry.incSeason();
-                notifyDataSetChanged();
+                m_fragment.IncSeasonSeriesEntry(entry);
+                //Notify Dataset Changed im Firebase Listener
             }
         });
 
         listItemViewHolder.incEpisodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                entry.incEpisode();
-                notifyDataSetChanged();
+                m_fragment.IncEpisodeSeriesEntry(entry);
             }
         });
 
         listItemViewHolder.decSeasonButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                entry.decSeason();
-                notifyDataSetChanged();
+                m_fragment.DecSeasonSeriesEntry(entry);
             }
         });
 
         listItemViewHolder.decEpisodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                entry.decEpisode();
-                notifyDataSetChanged();
+                m_fragment.DecEpisodeSeriesEntry(entry);
+                //entry.decEpisode();
+                //notifyDataSetChanged();
             }
         });
 

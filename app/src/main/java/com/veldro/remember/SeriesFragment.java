@@ -15,6 +15,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -27,11 +35,14 @@ import java.util.ArrayList;
  */
 public class SeriesFragment extends Fragment {
 
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
+    private DatabaseReference mDatabaseRefSeries;
 
     private OnFragmentInteractionListener mListener;
 
     ExpandableListView m_seriesListView;
-    ArrayList<SeriesEntry> testSeriesEntrys = new ArrayList<>();
+    ArrayList<SeriesEntry> SeriesEntrys = new ArrayList<>();
     ExpandableListAdapterSeries seriesAdapter;
 
     public SeriesFragment() {
@@ -51,16 +62,34 @@ public class SeriesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabaseRefSeries = mDatabase.child("users").child(String.valueOf(mAuth.getUid())).child("series");
+
         m_seriesListView = view.findViewById(R.id.seriesExpListView);
-        testSeriesEntrys.clear();
-        SeriesEntry entry1 = new SeriesEntry("Series 1", 0, 0);
-        SeriesEntry entry2 = new SeriesEntry("Series 2", 1, 12);
-        SeriesEntry entry3 = new SeriesEntry("Family Guy", 15, 3);
-        testSeriesEntrys.add(entry1);
-        testSeriesEntrys.add(entry2);
-        testSeriesEntrys.add(entry3);
-        seriesAdapter = new ExpandableListAdapterSeries(getContext(), testSeriesEntrys);
+        SeriesEntrys.clear();
+
+        seriesAdapter = new ExpandableListAdapterSeries(getContext(), SeriesEntrys, this);
         m_seriesListView.setAdapter(seriesAdapter);
+
+        //Fill Arraylist whit Cloud Data
+        mDatabaseRefSeries.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                SeriesEntrys.clear();
+                for(DataSnapshot dsp: dataSnapshot.getChildren()){
+                    SeriesEntrys.add(dsp.getValue(SeriesEntry.class));
+
+                }
+                seriesAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
     }
 
@@ -104,4 +133,34 @@ public class SeriesFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    private void addNewSeries(String userId, String name){
+        if(userId == null)
+            return;
+        SeriesEntry newEntry = new SeriesEntry(name);
+        mDatabaseRefSeries.child(newEntry.name).setValue(newEntry);
+    }
+
+    public void IncEpisodeSeriesEntry(SeriesEntry entry){
+        //Do FireBase Stuff
+        entry.incEpisode();
+        mDatabaseRefSeries.child(entry.name).setValue(entry);
+    }
+
+    public void IncSeasonSeriesEntry(SeriesEntry entry){
+        entry.incSeason();
+        mDatabaseRefSeries.child(entry.name).setValue(entry);
+    }
+
+    public void DecEpisodeSeriesEntry(SeriesEntry entry){
+        entry.decEpisode();
+        mDatabaseRefSeries.child(entry.name).setValue(entry);
+    }
+
+    public void DecSeasonSeriesEntry(SeriesEntry entry){
+        entry.decSeason();
+        mDatabaseRefSeries.child(entry.name).setValue(entry);
+    }
+
+
 }

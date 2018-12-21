@@ -1,65 +1,56 @@
 package com.veldro.remember;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class SeriesEntry {
-    private String m_name;
-    private int m_episode;
-    private int m_season;
-    private int m_minutes;
+    public String name;
+    public int episode;
+    public int season;
 
     SeriesEntry(){}
 
     SeriesEntry(String name){
-        m_name = name;
-        m_episode = 0;
-        m_season = 0;
-        m_minutes = 0;
+        this.name = name;
+        this.episode = 0;
+        this.season = 0;
     }
 
     SeriesEntry(String name, int episode, int season){
-        m_name = name;
-        m_episode = episode;
-        m_season = season;
-        m_minutes = 0;
+        this.name = name;
+        this.episode = episode;
+        this.season = season;
+
     }
 
-    SeriesEntry(String name, int episode, int season, int minutes){
-        m_name = name;
-        m_episode = episode;
-        m_season = season;
-        m_minutes = minutes;
-    }
-
-    public String getName(){
-        return m_name;
-    }
-
-    public int getEpisode(){
-        return m_episode;
-    }
-
-    public int getSeason(){
-        return m_season;
-    }
-
-    public int getMinutes(){
-        return m_minutes;
-    }
 
     public void incSeason(){
-        m_season++;
+        season++;
     }
 
     public void incEpisode(){
-        m_episode++;
+        episode++;
     }
 
     public void decSeason(){
-        m_season--;
-        m_season = m_season < 0? 0 : m_season;
+        season--;
+        season = season < 0? 0 : season;
     }
 
     public void decEpisode(){
-        m_episode--;
-        m_episode = m_episode < 0? 0 : m_episode;
+        episode--;
+        episode = episode < 0? 0 : episode;
+    }
+
+    @Exclude
+    public Map<String, Object> toMap(){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("name", name);
+        result.put("episode", episode);
+        result.put("season", season);
+
+        return result;
     }
 }
