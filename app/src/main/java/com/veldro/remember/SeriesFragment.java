@@ -7,11 +7,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -27,23 +30,17 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SeriesFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- */
-public class SeriesFragment extends Fragment {
+
+public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.AddSeriesDialogListener {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseRefSeries;
 
-    private OnFragmentInteractionListener mListener;
-
     ExpandableListView m_seriesListView;
     ArrayList<SeriesEntry> SeriesEntrys = new ArrayList<>();
     ExpandableListAdapterSeries seriesAdapter;
+    FloatingActionButton addNewSeriesButton;
 
     public SeriesFragment() {
         // Required empty public constructor
@@ -90,54 +87,44 @@ public class SeriesFragment extends Fragment {
             }
         });
 
+        addNewSeriesButton = view.findViewById(R.id.addNewSeriesButton);
+        addNewSeriesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddSeriesDialog();
+            }
+        });
 
-    }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-        */
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onFinishAddSeriesDialog(String name, int season, int episode) {
+        addNewSeries(mAuth.getUid(), name, season, episode);
     }
+
 
     private void addNewSeries(String userId, String name){
         if(userId == null)
             return;
         SeriesEntry newEntry = new SeriesEntry(name);
+        mDatabaseRefSeries.child(newEntry.name).setValue(newEntry);
+    }
+
+    private void addNewSeries(String userId, String name, int season, int episode){
+        if(userId == null)
+            return;
+        SeriesEntry newEntry = new SeriesEntry(name,season,episode);
         mDatabaseRefSeries.child(newEntry.name).setValue(newEntry);
     }
 
@@ -160,6 +147,13 @@ public class SeriesFragment extends Fragment {
     public void DecSeasonSeriesEntry(SeriesEntry entry){
         entry.decSeason();
         mDatabaseRefSeries.child(entry.name).setValue(entry);
+    }
+
+    private void showAddSeriesDialog(){
+        FragmentManager fm = getFragmentManager();
+        SeriesAddDialogFragment addSeriesDialog = SeriesAddDialogFragment.newInstance("Add Series");
+        addSeriesDialog.setTargetFragment(SeriesFragment.this, 300);
+        addSeriesDialog.show(fm,"AddSeriesDialog");
     }
 
 

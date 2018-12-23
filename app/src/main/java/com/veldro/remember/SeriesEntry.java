@@ -18,7 +18,7 @@ public class SeriesEntry {
         this.season = 0;
     }
 
-    SeriesEntry(String name, int episode, int season){
+    SeriesEntry(String name, int season, int episode){
         this.name = name;
         this.episode = episode;
         this.season = season;
