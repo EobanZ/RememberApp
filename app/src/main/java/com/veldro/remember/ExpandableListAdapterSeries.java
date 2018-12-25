@@ -9,8 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+
 
 public class ExpandableListAdapterSeries extends BaseExpandableListAdapter {
 
@@ -23,6 +22,7 @@ public class ExpandableListAdapterSeries extends BaseExpandableListAdapter {
     {
         m_context = context;
         m_entries = entries;
+
     }
 
     public ExpandableListAdapterSeries(Context context, ArrayList<SeriesEntry> entries, SeriesFragment fragment)
@@ -69,7 +69,7 @@ public class ExpandableListAdapterSeries extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
-        SeriesEntry entry = (SeriesEntry) getGroup(i);
+        final SeriesEntry entry = (SeriesEntry) getGroup(i);
         if(view == null)
         {
             LayoutInflater inflater = (LayoutInflater)this.m_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -83,7 +83,6 @@ public class ExpandableListAdapterSeries extends BaseExpandableListAdapter {
         grouItemHolder.nameTextView.setText(entry.name);
         grouItemHolder.seasonTextView.setText("S: " +String.valueOf(entry.season));
         grouItemHolder.episodeTextView.setText("E: " +String.valueOf(entry.episode));
-
 
 
         return view;

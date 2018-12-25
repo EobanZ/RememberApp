@@ -1,6 +1,8 @@
 package com.veldro.remember;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -68,6 +71,14 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
 
         seriesAdapter = new ExpandableListAdapterSeries(getContext(), SeriesEntrys, this);
         m_seriesListView.setAdapter(seriesAdapter);
+
+        m_seriesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                showDeleteSeriesDialog(position);
+                return false;
+            }
+        });
 
         //Fill Arraylist whit Cloud Data
         mDatabaseRefSeries.addValueEventListener(new ValueEventListener() {
@@ -149,11 +160,38 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
         mDatabaseRefSeries.child(entry.name).setValue(entry);
     }
 
+    public void DeleteSeriesEntry(int position){
+        mDatabaseRefSeries.child(SeriesEntrys.get(position).name).setValue(null);
+    }
+
     private void showAddSeriesDialog(){
         FragmentManager fm = getFragmentManager();
         SeriesAddDialogFragment addSeriesDialog = SeriesAddDialogFragment.newInstance("Add Series");
         addSeriesDialog.setTargetFragment(SeriesFragment.this, 300);
         addSeriesDialog.show(fm,"AddSeriesDialog");
+    }
+
+    private void showDeleteSeriesDialog(final int position){
+        String s = "Do you want to delete " + SeriesEntrys.get(position).name + "?";
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(s)
+                .setTitle("Delete")
+                .setPositiveButton("Delete!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DeleteSeriesEntry(position);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
     }
 
 
