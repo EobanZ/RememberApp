@@ -45,6 +45,15 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
     ExpandableListAdapterSeries seriesAdapter;
     FloatingActionButton addNewSeriesButton;
 
+    public enum OrderModeSeries{
+        NAME,
+        LASTCHANGED,
+        AGE
+    }
+
+    public static OrderModeSeries orderModeSeries = OrderModeSeries.LASTCHANGED;
+
+
     public SeriesFragment() {
         // Required empty public constructor
     }
@@ -65,6 +74,17 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabaseRefSeries = mDatabase.child("users").child(String.valueOf(mAuth.getUid())).child("series");
+
+        switch (orderModeSeries) {
+            case NAME:
+                break;
+            case LASTCHANGED:
+                mDatabaseRefSeries.orderByChild("changed-timestamp");
+                break;
+            case AGE:
+                break;
+        }
+
 
         m_seriesListView = view.findViewById(R.id.seriesExpListView);
         SeriesEntrys.clear();

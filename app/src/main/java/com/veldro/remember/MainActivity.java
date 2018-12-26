@@ -23,6 +23,7 @@ import android.support.v4.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
 public class MainActivity extends AppCompatActivity {
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     Fragment booksFragment;
     Fragment audiobooksFragment;
     FragmentTransaction transaction;
+
 
 
     @Override

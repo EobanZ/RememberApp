@@ -1,6 +1,7 @@
 package com.veldro.remember;
 
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.ServerValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +10,7 @@ public class SeriesEntry {
     public String name;
     public int episode;
     public int season;
+
 
     SeriesEntry(){}
 
