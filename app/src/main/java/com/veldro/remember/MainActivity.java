@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
             userId = user.getUid();
             TextView tv = mNavigationView.getHeaderView(0).findViewById(R.id.accountEmailTextView);
             tv.setText(userEmail);
-            Toast.makeText(getApplicationContext(), "User id & Mail: " + userId.toString() + " " + userEmail.toString(),Toast.LENGTH_LONG).show();
         }
         else{
             Intent startIntent = new Intent(getApplicationContext(), StartActivity.class);

@@ -75,16 +75,6 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabaseRefSeries = mDatabase.child("users").child(String.valueOf(mAuth.getUid())).child("series");
 
-        switch (orderModeSeries) {
-            case NAME:
-                break;
-            case LASTCHANGED:
-                mDatabaseRefSeries.orderByChild("changed-timestamp");
-                break;
-            case AGE:
-                break;
-        }
-
 
         m_seriesListView = view.findViewById(R.id.seriesExpListView);
         SeriesEntrys.clear();
@@ -109,7 +99,9 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
                     SeriesEntrys.add(dsp.getValue(SeriesEntry.class));
 
                 }
+                OrderSeriesEntrys(SeriesEntrys, orderModeSeries);
                 seriesAdapter.notifyDataSetChanged();
+                //Toast.makeText(getContext(),"Timestamp to int: "+ SeriesEntrys.get(0).TimestampChanged, Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -125,6 +117,7 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
                 showAddSeriesDialog();
             }
         });
+
 
 
     }
@@ -213,6 +206,38 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
 
 
     }
+
+    private void OrderSeriesEntrys(ArrayList<SeriesEntry> entries , OrderModeSeries mode){
+
+        SeriesEntry temp;
+        if (entries.size()>1) // check if the number of orders is larger than 1
+        {
+            switch (mode) {
+                case NAME:
+                    break;
+                case LASTCHANGED:
+
+                    for (int x=0; x<entries.size(); x++) // bubble sort outer loop
+                    {
+                        for (int i=0; i < entries.size()- x - 1; i++) {
+                            if (Long.parseLong(entries.get(i).TimestampChanged.toString())-Long.parseLong(entries.get(i+1).TimestampChanged.toString()) < 0);
+                            {
+                                temp = entries.get(i);
+                                entries.set(i,entries.get(i+1) );
+                                entries.set(i+1, temp);
+                            }
+                        }
+                    }
+                    Toast.makeText(getContext(),"First element is: " + entries.get(0).name, Toast.LENGTH_LONG).show();
+                    break;
+                case AGE:
+                    break;
+            }
+
+        }
+    }
+
+
 
 
 }
