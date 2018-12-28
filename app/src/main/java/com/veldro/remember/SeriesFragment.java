@@ -28,10 +28,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-
+import java.util.Collections;
 
 
 public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.AddSeriesDialogListener {
@@ -39,6 +40,7 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private DatabaseReference mDatabaseRefSeries;
+    private Query  mSeiresQuery;
 
     ExpandableListView m_seriesListView;
     ArrayList<SeriesEntry> SeriesEntrys = new ArrayList<>();
@@ -74,7 +76,7 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabaseRefSeries = mDatabase.child("users").child(String.valueOf(mAuth.getUid())).child("series");
-
+        mSeiresQuery = mDatabaseRefSeries.orderByChild("TimestampChanged");
 
         m_seriesListView = view.findViewById(R.id.seriesExpListView);
         SeriesEntrys.clear();
@@ -90,8 +92,8 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
             }
         });
 
-        //Fill Arraylist whit Cloud Data
-        mDatabaseRefSeries.addValueEventListener(new ValueEventListener() {
+        //Add a listener for changes in the database
+        mSeiresQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 SeriesEntrys.clear();
@@ -99,9 +101,9 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
                     SeriesEntrys.add(dsp.getValue(SeriesEntry.class));
 
                 }
-                OrderSeriesEntrys(SeriesEntrys, orderModeSeries);
+                Collections.reverse(SeriesEntrys);
                 seriesAdapter.notifyDataSetChanged();
-                //Toast.makeText(getContext(),"Timestamp to int: "+ SeriesEntrys.get(0).TimestampChanged, Toast.LENGTH_LONG).show();
+
             }
 
             @Override
@@ -109,6 +111,7 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
 
             }
         });
+
 
         addNewSeriesButton = view.findViewById(R.id.addNewSeriesButton);
         addNewSeriesButton.setOnClickListener(new View.OnClickListener() {

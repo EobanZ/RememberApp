@@ -4,15 +4,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-
-import org.w3c.dom.Text;
 
 
 public class SeriesAddDialogFragment extends DialogFragment {
@@ -21,7 +18,7 @@ public class SeriesAddDialogFragment extends DialogFragment {
     EditText seasonEditText;
     EditText episodeEditText;
     Button confirmButton;
-    Button cancellButton;
+    Button cancelButton;
 
     public SeriesAddDialogFragment(){}
 
@@ -45,7 +42,7 @@ public class SeriesAddDialogFragment extends DialogFragment {
          seasonEditText = view.findViewById(R.id.seriesAddSeasonEditText);
          episodeEditText = view.findViewById(R.id.seriesAddEpisodeEditText);
          confirmButton = view.findViewById(R.id.confirmAddSeriesButton);
-         cancellButton = view.findViewById(R.id.cancelAddSeriesButton);
+         cancelButton = view.findViewById(R.id.cancelAddSeriesButton);
 
          String title = getArguments().getString("title");
          getDialog().setTitle(title);
@@ -105,7 +102,7 @@ public class SeriesAddDialogFragment extends DialogFragment {
             }
         });
 
-        cancellButton.setOnClickListener(new View.OnClickListener() {
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
@@ -119,7 +116,6 @@ public class SeriesAddDialogFragment extends DialogFragment {
         if(TextUtils.isEmpty(s))
             return false;
         int i = Integer.parseInt(s);
-        Log.i("testesttest", String.valueOf(i));
         return i>=0 && i<Integer.MAX_VALUE;
     }
 
@@ -129,7 +125,7 @@ public class SeriesAddDialogFragment extends DialogFragment {
 
     public void sendBackResults(){
         AddSeriesDialogListener listener = (AddSeriesDialogListener) getTargetFragment();
-        listener.onFinishAddSeriesDialog(nameEditText.getText().toString(), Integer.parseInt(seasonEditText.getText().toString()), Integer.parseInt(episodeEditText.getText().toString()));
+        listener.onFinishAddSeriesDialog(nameEditText.getText().toString().toLowerCase(), Integer.parseInt(seasonEditText.getText().toString()), Integer.parseInt(episodeEditText.getText().toString()));
         dismiss();
     }
 }
