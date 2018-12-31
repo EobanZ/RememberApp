@@ -84,7 +84,6 @@ public class ExpandableListAdapterSeries extends BaseExpandableListAdapter {
         grouItemHolder.seasonTextView.setText("S: " +String.valueOf(entry.season));
         grouItemHolder.episodeTextView.setText("E: " +String.valueOf(entry.episode));
 
-
         return view;
     }
 
@@ -165,4 +164,6 @@ public class ExpandableListAdapterSeries extends BaseExpandableListAdapter {
         TextView seasonCountTextView;
         TextView episodeCountTextView;
     }
+
+
 }

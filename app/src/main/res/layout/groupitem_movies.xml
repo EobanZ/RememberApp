@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/seriesNameTextView"
+        android:id="@+id/movieNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -17,29 +17,29 @@
         android:textAlignment="textStart"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/groupItemSeasonSeriesTextView"
+        app:layout_constraintEnd_toStartOf="@+id/groupItemMinuteMovieTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/groupItemSeasonSeriesTextView"
+        android:id="@+id/groupItemMinuteMovieTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:text="S: 0"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/groupItemEpisodeSeriesTextView"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:text="Min: 0"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/groupItemHourMovieTextView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/groupItemEpisodeSeriesTextView"
+        android:id="@+id/groupItemHourMovieTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="E: 0"
-        android:textSize="24sp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:text="H: 0:00"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,5 +51,5 @@
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seriesNameTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/movieNameTextView" />
 </android.support.constraint.ConstraintLayout>
