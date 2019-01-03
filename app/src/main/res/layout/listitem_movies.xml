@@ -38,10 +38,10 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="18dp"
         android:ems="10"
-        android:hint="122"
         android:inputType="numberDecimal"
+        android:text="0"
         app:layout_constraintStart_toEndOf="@+id/movieRadioGroup"
         app:layout_constraintTop_toTopOf="parent" />
 

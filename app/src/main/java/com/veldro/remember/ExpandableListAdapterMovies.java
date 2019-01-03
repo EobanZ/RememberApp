@@ -1,11 +1,13 @@
 package com.veldro.remember;
 
 import android.content.Context;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -14,9 +16,15 @@ import java.util.ArrayList;
 
 public class ExpandableListAdapterMovies extends BaseExpandableListAdapter {
 
+    public enum TimeMode{
+        minutes,
+        hours
+    }
+
     private Context m_context;
     ArrayList<MovieEntry> m_entries;
     private MoviesFragment m_fragment;
+    private TimeMode timeMode = TimeMode.minutes;
 
     public ExpandableListAdapterMovies(Context context, ArrayList<MovieEntry> entries, MoviesFragment fragment){
         this.m_context = context;
@@ -69,15 +77,85 @@ public class ExpandableListAdapterMovies extends BaseExpandableListAdapter {
         groupItemViewHolder viewHolder = new groupItemViewHolder();
         viewHolder.nameTextView = convertView.findViewById(R.id.movieNameTextView);
         viewHolder.minutesTextView = convertView.findViewById(R.id.groupItemMinuteMovieTextView);
-        viewHolder.minutesTextView = convertView.findViewById(R.id.groupItemHourMovieTextView);
+        viewHolder.hoursTextView = convertView.findViewById(R.id.groupItemHourMovieTextView);
 
-        //TODO: Hier weiter machen!
+
+        viewHolder.nameTextView.setText(entry.name);
+        viewHolder.minutesTextView.setText("Minutes:" +Integer.toString(entry.minutes));
+        viewHolder.hoursTextView.setText("Time: " + Integer.toString(entry.minutes/60)+":"+Integer.toString(entry.minutes % 60));
         return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        return null;
+
+        final MovieEntry entry = (MovieEntry) getChild(groupPosition,childPosition);
+
+        if(convertView == null)
+        {
+            LayoutInflater inflater = (LayoutInflater) this.m_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.listitem_movies, null);
+        }
+
+        final listItemViewHolder viewHolder = new listItemViewHolder();
+        viewHolder.movieRadioGroup = convertView.findViewById(R.id.movieRadioGroup);
+        viewHolder.minutesRadioButton = convertView.findViewById(R.id.minutesRadioButton);
+        viewHolder.hoursRadioButton = convertView.findViewById(R.id.hoursRadioButton);
+        viewHolder.setSeasonButton = convertView.findViewById(R.id.setMinutesHoursButton);
+        viewHolder.newTimeEditText = convertView.findViewById(R.id.minutesHoursEditText);
+
+        viewHolder.movieRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                int checkedRadioId = group.getCheckedRadioButtonId();
+                switch (checkedRadioId){
+                    case R.id.minutesRadioButton:
+                        timeMode = TimeMode.minutes;
+                        viewHolder.newTimeEditText.setText("0");
+                        viewHolder.newTimeEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED);
+                        break;
+                    case R.id.hoursRadioButton:
+                        timeMode = TimeMode.hours;
+                        viewHolder.newTimeEditText.setText("0.00");
+                        viewHolder.newTimeEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_FLAG_SIGNED );
+                        break;
+                    default:
+                        break;
+
+                }
+            }
+        });
+
+        viewHolder.newTimeEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewHolder.newTimeEditText.setText("");
+            }
+        });
+
+        viewHolder.setSeasonButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String input = viewHolder.newTimeEditText.getText().toString();
+
+                switch (timeMode) {
+                    case minutes:
+                        int m = Integer.parseInt(input);
+                        if(m < 0)
+                            m = m * -1;
+                        m_fragment.setMinutes(m, entry);
+                        break;
+                    case hours:
+                        float h = Float.parseFloat(input);
+                        if(h < 0)
+                            h = h * -1;
+                        m_fragment.setMinutes(h, entry);
+                        break;
+                }
+            }
+        });
+
+        return convertView;
     }
 
     @Override
@@ -98,14 +176,7 @@ public class ExpandableListAdapterMovies extends BaseExpandableListAdapter {
         RadioGroup movieRadioGroup;
         RadioButton minutesRadioButton;
         RadioButton hoursRadioButton;
+        EditText newTimeEditText;
     }
 
-    private int[] MinToHour(int min){
-        int h;
-        int m;
-        h = min / 60;
-        m = min % 60;
-        int[]res = {h,m};
-        return  res;
-    }
 }
