@@ -9,9 +9,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-public class MoviesFragment extends Fragment {
+public class MoviesFragment extends Fragment implements MoviesAddDialogFragment.AddMovieDialogListener {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -63,10 +65,17 @@ public class MoviesFragment extends Fragment {
         MovieEntries.clear();
 
         addNewMovieButton = view.findViewById(R.id.addNewMovieButton);
-        addNewSeries(mAuth.getUid(),"testMovie", 123);
 
         moviesAdapter = new ExpandableListAdapterMovies(getContext(), MovieEntries, this);
         m_moviesListView.setAdapter(moviesAdapter);
+
+        m_moviesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                showDeleteMovieDialog(position);
+                return false;
+            }
+        });
 
         mMoviesQuery.addValueEventListener(new ValueEventListener() {
             @Override
@@ -85,6 +94,12 @@ public class MoviesFragment extends Fragment {
             }
         });
 
+        addNewMovieButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAddMovieDialog();
+            }
+        });
 
     }
 
@@ -100,14 +115,14 @@ public class MoviesFragment extends Fragment {
 
     }
 
-    private void addNewSeries(String userId, String name){
+    private void addNewMovie(String userId, String name){
         if(userId == null)
             return;
         MovieEntry newEntry = new MovieEntry(name);
         mDatabaseRefMovies.child(newEntry.name).setValue(newEntry);
     }
 
-    private void addNewSeries(String userId, String name, int minutes){
+    private void addNewMovie(String userId, String name, int minutes){
         if(userId == null)
             return;
         MovieEntry newEntry = new MovieEntry(name);
@@ -121,12 +136,10 @@ public class MoviesFragment extends Fragment {
     }
 
     public void setMinutes(float time, MovieEntry entry){
-        String s = String.valueOf(time);
-        String[] split = s.split(".");
-        int minutes = Integer.parseInt(split[0]);
-        minutes += Integer.parseInt(split[1]);
+        int h = ((int) time)*60;
+        int m = (int) ((time + 0.001)*100)% 100;
 
-        setMinutes(minutes, entry);
+        setMinutes(h+m, entry);
     }
 
     private void showDeleteMovieDialog(final int position){
@@ -137,7 +150,7 @@ public class MoviesFragment extends Fragment {
                 .setPositiveButton("Delete!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DeleteSeriesEntry(position);
+                        DeleteMovieEntry(position);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -150,7 +163,20 @@ public class MoviesFragment extends Fragment {
         dialog.show();
     }
 
-    public void DeleteSeriesEntry(int position){
+    public void DeleteMovieEntry(int position){
         mDatabaseRefMovies.child(MovieEntries.get(position).name).setValue(null);
+    }
+
+    private void showAddMovieDialog(){
+        FragmentManager fm = getFragmentManager();
+        MoviesAddDialogFragment addMovieDialog = MoviesAddDialogFragment.newInstance("Add Movie");
+        addMovieDialog.setTargetFragment(MoviesFragment.this, 300);
+        addMovieDialog.show(fm,"AddMovieDialog");
+
+    }
+
+    @Override
+    public void onFinishAddMovieDialog(String name) {
+        addNewMovie(mAuth.getUid(), name);
     }
 }

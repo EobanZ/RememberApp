@@ -13,7 +13,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:text="Series Name"
+        android:text="Movie Name"
         android:textAlignment="textStart"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"

@@ -81,9 +81,17 @@ public class ExpandableListAdapterMovies extends BaseExpandableListAdapter {
 
 
         viewHolder.nameTextView.setText(entry.name);
-        viewHolder.minutesTextView.setText("Minutes:" +Integer.toString(entry.minutes));
-        viewHolder.hoursTextView.setText("Time: " + Integer.toString(entry.minutes/60)+":"+Integer.toString(entry.minutes % 60));
+        viewHolder.minutesTextView.setText("Min:" +Integer.toString(entry.minutes));
+        viewHolder.hoursTextView.setText("Time: " + Integer.toString(entry.minutes/60)+":"+ checkMinLenth(entry.minutes % 60));
         return convertView;
+    }
+
+    private String checkMinLenth(int i)
+    {
+        if (i<10)
+            return "0"+String.valueOf(i);
+        else
+            return String.valueOf(i);
     }
 
     @Override

@@ -111,7 +111,6 @@ public class ExpandableListAdapterSeries extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 m_fragment.IncSeasonSeriesEntry(entry);
-                //Notify Dataset Changed im Firebase Listener
             }
         });
 
@@ -133,8 +132,6 @@ public class ExpandableListAdapterSeries extends BaseExpandableListAdapter {
             @Override
             public void onClick(View view) {
                 m_fragment.DecEpisodeSeriesEntry(entry);
-                //entry.decEpisode();
-                //notifyDataSetChanged();
             }
         });
 
