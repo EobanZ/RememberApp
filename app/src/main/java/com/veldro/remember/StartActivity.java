@@ -71,11 +71,16 @@ public class StartActivity extends Activity {
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        mAuth.signOut();
         if(currentUser != null)
         {
             startMainActivity();
         }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
     }
 

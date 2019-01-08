@@ -75,6 +75,14 @@ public class MainActivity extends AppCompatActivity {
                         transaction = getSupportFragmentManager().beginTransaction();
                         transaction.replace(R.id.fragment_container, moviesFragment, "MoviesFragment");
                         transaction.commit();
+                        break;
+                    case R.id.nav_books:
+                        if(booksFragment == null)
+                            booksFragment = new BooksFragment();
+                        transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.fragment_container, booksFragment, "BooksFragment");
+                        transaction.commit();
+                        break;
                 }
 
                 return true;

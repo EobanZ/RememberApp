@@ -6,45 +6,41 @@ import com.google.firebase.database.ServerValue;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MovieEntry {
-
+public class BookEntry {
     public String name;
-    public int minutes;
+    public int page;
     public Object TimestampCreation;
     public Object TimestampChanged;
 
+    BookEntry(){}
 
-    MovieEntry(){}
-
-    MovieEntry(String name){
+    BookEntry(String name){
         this.name = name;
-        this.minutes = 0;
-        this.TimestampCreation = ServerValue.TIMESTAMP;
-        this.TimestampChanged = TimestampCreation;
+        this.page = 0;
+        this.TimestampCreation = this.TimestampChanged = ServerValue.TIMESTAMP;
     }
 
-    MovieEntry(String name, int minutes){
+    BookEntry(String name, int page){
         this.name = name;
-        this.minutes = minutes;
-        this.TimestampCreation = ServerValue.TIMESTAMP;
-        this.TimestampChanged = TimestampCreation;
+        this.page = page;
+        this.TimestampCreation = this.TimestampChanged = ServerValue.TIMESTAMP;
     }
 
-    public void setMinutes(int i){
+    public void setPage(int i){
         i= i<0?0:i;
-        this.minutes = i;
+        this.page = i;
         updateChangedTimestamp();
     }
 
-    private void updateChangedTimestamp(){
-        TimestampChanged = ServerValue.TIMESTAMP;
+    private void updateChangedTimestamp() {
+        this.TimestampChanged = ServerValue.TIMESTAMP;
     }
 
     @Exclude
-    public Map<String, Object> toMap(){
+    public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("name", name);
-        result.put("minutes", minutes);
+        result.put("page", page);
         result.put("TimestapChanged", TimestampChanged);
         result.put("TimestapCreation", TimestampCreation);
 
