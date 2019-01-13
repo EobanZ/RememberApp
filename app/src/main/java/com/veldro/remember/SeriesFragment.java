@@ -47,13 +47,6 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
     ExpandableListAdapterSeries seriesAdapter;
     FloatingActionButton addNewSeriesButton;
 
-    public enum OrderModeSeries{
-        NAME,
-        LASTCHANGED,
-        AGE
-    }
-
-    public static OrderModeSeries orderModeSeries = OrderModeSeries.LASTCHANGED;
 
 
     public SeriesFragment() {
@@ -209,38 +202,4 @@ public class SeriesFragment extends Fragment implements SeriesAddDialogFragment.
 
 
     }
-
-    private void OrderSeriesEntrys(ArrayList<SeriesEntry> entries , OrderModeSeries mode){
-
-        SeriesEntry temp;
-        if (entries.size()>1) // check if the number of orders is larger than 1
-        {
-            switch (mode) {
-                case NAME:
-                    break;
-                case LASTCHANGED:
-
-                    for (int x=0; x<entries.size(); x++) // bubble sort outer loop
-                    {
-                        for (int i=0; i < entries.size()- x - 1; i++) {
-                            if (Long.parseLong(entries.get(i).TimestampChanged.toString())-Long.parseLong(entries.get(i+1).TimestampChanged.toString()) < 0);
-                            {
-                                temp = entries.get(i);
-                                entries.set(i,entries.get(i+1) );
-                                entries.set(i+1, temp);
-                            }
-                        }
-                    }
-                    Toast.makeText(getContext(),"First element is: " + entries.get(0).name, Toast.LENGTH_LONG).show();
-                    break;
-                case AGE:
-                    break;
-            }
-
-        }
-    }
-
-
-
-
 }

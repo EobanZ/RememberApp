@@ -6,26 +6,32 @@ import com.google.firebase.database.ServerValue;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BookEntry {
+public class AudioBookEntry {
     public String name;
-    public int page;
+    public int chapter;
     public Object TimestampCreation;
     public Object TimestampChanged;
 
-    BookEntry(){}
+    public AudioBookEntry(){}
 
-    BookEntry(String name){
+    public AudioBookEntry(String name, int chapter){
+        this.name = name;
+        this.chapter = chapter;
+        TimestampCreation = TimestampChanged = ServerValue.TIMESTAMP;
+    }
+
+    public AudioBookEntry(String name){
         this(name,0);
     }
 
-    BookEntry(String name, int page){
-        this.name = name;
-        this.page = page;
-        this.TimestampCreation = this.TimestampChanged = ServerValue.TIMESTAMP;
+    public void incChapter(){
+        chapter++;
+        updateChangedTimestamp();
     }
 
-    public void setPage(int i){
-        this.page = i<0?0:i;
+    public void decChapter(){
+        chapter--;
+        chapter = chapter < 0? 0 : chapter;
         updateChangedTimestamp();
     }
 
@@ -37,7 +43,7 @@ public class BookEntry {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("name", name);
-        result.put("page", page);
+        result.put("chapter", chapter);
         result.put("TimestapChanged", TimestampChanged);
         result.put("TimestapCreation", TimestampCreation);
 

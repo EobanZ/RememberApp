@@ -83,6 +83,13 @@ public class MainActivity extends AppCompatActivity {
                         transaction.replace(R.id.fragment_container, booksFragment, "BooksFragment");
                         transaction.commit();
                         break;
+                    case R.id.nav_audiobooks:
+                        if(audiobooksFragment == null)
+                            audiobooksFragment = new AudioBooksFragment();
+                        transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.fragment_container, audiobooksFragment, "AudioBooksFragment");
+                        transaction.commit();
+                        break;
                 }
 
                 return true;

@@ -26,69 +26,68 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class BooksFragment extends Fragment {
+public class AudioBooksFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
-    private DatabaseReference mDatabaseRefBooks;
-    private Query mBooksQuery;
+    private DatabaseReference mDatabaseRefAudioBooks;
+    private Query mAudioBooksQuery;
 
-    ExpandableListView m_booksListView;
-    ArrayList<BookEntry> BookEntries = new ArrayList<>();
-    ExpandableListAdapterBooks booksAdapter;
-    FloatingActionButton addNewBookButton;
+    ExpandableListView m_audiobooksListView;
+    ArrayList<AudioBookEntry> AudioBookEntries = new ArrayList<>();
+    ExpandableListAdapterAudioBooks audiobooksAdapter;
+    FloatingActionButton addNewAudioBookButton;
 
-    public BooksFragment(){
-        // Required empty public constructor
-    };
+    public AudioBooksFragment(){}
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_books, container, false);
+        return inflater.inflate(R.layout.fragment_audiobooks,container,false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabaseRefBooks = mDatabase.child("users").child(String.valueOf(mAuth.getUid())).child("books");
-        mBooksQuery = mDatabaseRefBooks.orderByChild("TimestampChanged");
+        mDatabaseRefAudioBooks = mDatabase.child("users").child(String.valueOf(mAuth.getUid())).child("audiobooks");
+        mAudioBooksQuery = mDatabaseRefAudioBooks.orderByChild("TimestampChanged");
 
-        booksAdapter = new ExpandableListAdapterBooks(getContext(),BookEntries, this);
+        audiobooksAdapter = new ExpandableListAdapterAudioBooks(getContext(),AudioBookEntries, this);
 
+        m_audiobooksListView = view.findViewById(R.id.audioBooksExpListView);
 
-        m_booksListView = view.findViewById(R.id.booksExpListView);
-        m_booksListView.setAdapter(booksAdapter);
-        m_booksListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        m_audiobooksListView.setAdapter(audiobooksAdapter);
+        m_audiobooksListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showDeleteBookDialog(position);
+                showDeleteAudioBookDialog(position);
                 return false;
             }
         });
 
-        addNewBookButton = view.findViewById(R.id.addNewBookButton);
-        addNewBookButton.setOnClickListener(new View.OnClickListener() {
+        addNewAudioBookButton = view.findViewById(R.id.addNewAudioBookButton);
+        addNewAudioBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddBookDialog();
+                showAddAudioBookDialog();
             }
         });
 
-        BookEntries.clear();
+        AudioBookEntries.clear();
 
-        mBooksQuery.addValueEventListener(new ValueEventListener() {
+        mAudioBooksQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                BookEntries.clear();
+                AudioBookEntries.clear();
                 for(DataSnapshot dsp: dataSnapshot.getChildren()){
-                    BookEntries.add(dsp.getValue(BookEntry.class));
+                    AudioBookEntries.add(dsp.getValue(AudioBookEntry.class));
                 }
-                Collections.reverse(BookEntries);
-                booksAdapter.notifyDataSetChanged();
+                Collections.reverse(AudioBookEntries);
+                audiobooksAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -99,38 +98,48 @@ public class BooksFragment extends Fragment {
 
     }
 
-    private void addNewBook(String userId, String name){
-        addNewBook(userId, name, 0);
-    }
-
-    private void addNewBook(String userId, String name, int page){
+    private void addNewAudioBook(String userId, String name, int chapter){
         if(userId == null)
             return;
-        BookEntry newEntry = new BookEntry(name, page);
-        mDatabaseRefBooks.child(newEntry.name).setValue(newEntry);
+        AudioBookEntry entry = new AudioBookEntry(name, chapter);
+        mDatabaseRefAudioBooks.child(entry.name).setValue(entry);
     }
 
-    public void setPage(int page, BookEntry entry){
-        entry.page = page;
-        mDatabaseRefBooks.child(entry.name).setValue(entry);
+    private void addNewAudioBook(String userId, String name){
+        this.addNewAudioBook(userId,name,0);
     }
 
-    public void DeleteBookEntry(int position){
-        mDatabaseRefBooks.child(BookEntries.get(position).name).setValue(null);
+    public void incChapter(AudioBookEntry entry){
+        entry.incChapter();
+        mDatabaseRefAudioBooks.child(entry.name).setValue(entry);
     }
 
-    private void showAddBookDialog(){
+    public void decChapter(AudioBookEntry entry){
+        entry.decChapter();
+        mDatabaseRefAudioBooks.child(entry.name).setValue(entry);
+    }
+
+    private void deleteEntry(int position){
+        mDatabaseRefAudioBooks.child(AudioBookEntries.get(position).name).setValue(null);
+    }
+
+    private void showAddAudioBookDialog(){
         final LayoutInflater inflater = getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialogfragment_add_book, null);
+        final View view = inflater.inflate(R.layout.dialogfragment_add_audiobook, null);
         final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-        alertDialog.setTitle("Add Book");
+        alertDialog.setTitle("Add Audio Book");
 
-        final EditText etBookName = (EditText) view.findViewById(R.id.bookNameAddEditText);
+        final EditText etAudioBookName = (EditText) view.findViewById(R.id.audiobookNameAddEditText);
+        final EditText etChapter = (EditText) view.findViewById(R.id.chapterAddEditText);
 
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                addNewBook(mAuth.getUid(),  etBookName.getText().toString());
+                if(TextUtils.isEmpty(etChapter.getText().toString())){
+                    addNewAudioBook(mAuth.getUid(), etAudioBookName.getText().toString());
+                }
+                else
+                    addNewAudioBook(mAuth.getUid(),  etAudioBookName.getText().toString(), Integer.parseInt(etChapter.getText().toString()));
             }
         });
 
@@ -144,15 +153,15 @@ public class BooksFragment extends Fragment {
         alertDialog.show();
     }
 
-    private void showDeleteBookDialog(final int position){
-        String s = "Do you want to delete " + BookEntries.get(position).name + "?";
+    private void showDeleteAudioBookDialog(final int position){
+        String s = "Do you want to delete " + AudioBookEntries.get(position).name + "?";
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(s)
                 .setTitle("Delete")
                 .setPositiveButton("Delete!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DeleteBookEntry(position);
+                        deleteEntry(position);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
