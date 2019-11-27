@@ -57,8 +57,8 @@ public class LoginActivity extends Activity {
 
         emailEditText.setError(null);
         passwordEditText.setError(null);
-        emailEditText.setText("fabi.zwick@live.de");
-        passwordEditText.setText("testtest");
+        emailEditText.setText("example@email.com");
+        passwordEditText.setText("password");
 
         final String email = emailEditText.getText().toString();
         final String password = passwordEditText.getText().toString();
